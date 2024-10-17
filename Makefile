@@ -10,7 +10,9 @@ gen:
 clean:
 	rm pb/*.go
 
-
+# To run the test of all packages
+test:
+	go test -cover -race ./...
 
 # Old Commands
 # protoc --proto_path=proto proto/*.proto  --go_out=:pb --go-grpc_out=:pb --grpc-gateway_out=:pb --openapiv2_out=:swagger
