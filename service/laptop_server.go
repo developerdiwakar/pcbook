@@ -45,6 +45,19 @@ func (server *LaptopServer) CreateLaptop(
 		laptop.Id = id.String()
 	}
 
+	// Some heavy processing
+	// time.Sleep(6 * time.Second) // enable this line to check the deadline exceeded and request canceled by the client case
+
+	if ctx.Err() == context.DeadlineExceeded {
+		log.Println("deadline is exceeded")
+		return nil, status.Error(codes.DeadlineExceeded, "deadline is exceeded")
+	}
+
+	if ctx.Err() == context.Canceled {
+		log.Println("request canceled by the client")
+		return nil, status.Error(codes.Canceled, "request canceled by the client")
+	}
+
 	// Save the laptop to store
 	err := server.Store.Save(laptop)
 

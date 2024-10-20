@@ -1,6 +1,10 @@
-# Run the main.go file
-run:
-	go run main.go
+# Run the client
+client:
+	go run cmd/client/main.go -address 0.0.0.0:8080
+
+# Run the server
+server:
+	go run cmd/server/main.go -port 8080
 
 # Generate the go code for protobuf files  
 gen: 
