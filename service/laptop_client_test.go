@@ -7,6 +7,7 @@ import (
 
 	"github.com/developerdiwakar/pcbook/pb"
 	"github.com/developerdiwakar/pcbook/sample"
+	"github.com/developerdiwakar/pcbook/serializer"
 	"github.com/developerdiwakar/pcbook/service"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
@@ -35,6 +36,9 @@ func TestClientCreateLaptop(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, other)
 
+	// Check that the saved laptop is the same as the one we send
+	requireSameLaptop(t, laptop, other)
+
 }
 
 func startTestLaptopServer(t *testing.T) (*service.LaptopServer, string) {
@@ -58,4 +62,15 @@ func newTestLaptopClient(t *testing.T, serverAddress string) pb.LaptopServiceCli
 	conn, err := grpc.NewClient(serverAddress, opts...)
 	require.NoError(t, err)
 	return pb.NewLaptopServiceClient(conn)
+}
+
+func requireSameLaptop(t *testing.T, laptop1 *pb.Laptop, laptop2 *pb.Laptop) {
+	// require.Equal(t, laptop1, laptop2) // this will lead to the error becasue pb.Laptop uses some extra field for serializing
+	json1, err := serializer.ProtobufToJSON(laptop1)
+	require.NoError(t, err)
+
+	json2, err := serializer.ProtobufToJSON(laptop2)
+	require.NoError(t, err)
+
+	require.Equal(t, json1, json2)
 }
